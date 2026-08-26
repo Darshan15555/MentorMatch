@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+/* ============================================================
+   DESIGN TOKENS — "Signal" theme
+   A junior sends a signal; a senior whose frequency overlaps
+   answers. Exposed as native Tailwind utilities via @theme
+   (bg-signal, text-receive, font-display, animate-heartbeat...).
+   Motion keyframes below are grounded in real physical/biological
+   systems — see comments on each.
+   ============================================================ */
+@theme {
+  --color-bg: #0F1226;
+  --color-bg-elevated: #171B36;
+  --color-surface: #1D2142;
+  --color-surface-hover: #262B52;
+  --color-border: #2C3160;
+  --color-text: #E7E9F5;
+  --color-text-muted: #8A8FB3;
+  --color-text-faint: #565B85;
+
+  --color-signal: #6C8CFF;
+  --color-signal-dim: #4C5FBF;
+  --color-receive: #4DD6C0;
+  --color-spark: #FFB84D;
+  --color-danger: #FF6B7A;
+
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+
+  /* Physics: uniform circular motion (Kepler-like orbit) */
+  --animate-orbit: orbit 12s linear infinite;
+  /* Biology: resting heartbeat rhythm, lub-dub double beat */
+  --animate-heartbeat: heartbeat 1.8s ease-in-out infinite;
+  /* Physics: an underdamped spring settling to rest */
+  --animate-spring-in: spring-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  /* Chemistry: a bond drawing itself between two atoms */
+  --animate-bond-form: bond-form 0.7s ease-out both;
+  /* Physics: an expanding, fading wavefront (signal ping / ripple) */
+  --animate-wave-ping: wave-ping 1.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Also expose as plain CSS vars for the handful of places using var(--x) directly */
+:root {
+  --bg: #0F1226; --bg-elevated: #171B36; --surface: #1D2142; --surface-hover: #262B52;
+  --border: #2C3160; --text: #E7E9F5; --text-muted: #8A8FB3; --text-faint: #565B85;
+  --signal: #6C8CFF; --signal-dim: #4C5FBF; --receive: #4DD6C0; --spark: #FFB84D; --danger: #FF6B7A;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-mono: 'IBM Plex Mono', 'Courier New', monospace;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; }
+body {
+  background-image:
+    radial-gradient(circle at 15% 10%, rgba(108,140,255,0.08), transparent 40%),
+    radial-gradient(circle at 85% 30%, rgba(77,214,192,0.06), transparent 40%);
+  background-attachment: fixed;
+}
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; margin: 0 0 0.4em; letter-spacing: -0.01em; }
+p { color: var(--text-muted); line-height: 1.55; }
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+
+/* ---- Keyframes ---- */
+
+/* Physics: uniform circular motion, x=r·cosθ, y=r·sinθ via transform */
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(var(--orbit-radius, 30px)) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(var(--orbit-radius, 30px)) rotate(-360deg); }
+}
+
+/* Biology: a resting heart's lub-dub — two quick beats, then rest */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14% { transform: scale(1.12); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.08); }
+  56% { transform: scale(1); }
+}
+
+/* Physics: an underdamped spring settling to rest (overshoot + decay) */
+@keyframes spring-in {
+  0% { transform: scale(0.6) translateY(8px); opacity: 0; }
+  60% { transform: scale(1.05) translateY(-2px); opacity: 1; }
+  80% { transform: scale(0.98) translateY(1px); }
+  100% { transform: scale(1) translateY(0); }
+}
+
+/* Chemistry: a bond drawing itself in between two atoms */
+@keyframes bond-form {
+  from { stroke-dashoffset: 1; opacity: 0; }
+  to { stroke-dashoffset: 0; opacity: 1; }
+}
+
+/* Physics: a wavefront expanding outward and fading (ripple / signal ping) */
+@keyframes wave-ping {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+/* Toast (kept as plain CSS — a fixed-position singleton, not worth Tailwindifying) */
+.toast {
+  position: fixed; bottom: 24px; right: 24px;
+  background: var(--surface); border: 1px solid var(--border);
+  padding: 12px 18px; border-radius: 10px; font-size: 0.85rem;
+  z-index: 200; box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+  color: var(--text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
